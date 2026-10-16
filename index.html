@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In</title>
+  <style>
+    /* ---------- Base / Reset ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --bg: #f3f4f6;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --error: #dc2626;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text);
+    }
+
+    /* ---------- Card ---------- */
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      animation: fadeUp 0.5s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-card h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.35rem;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+    }
+
+    /* ---------- Inputs ---------- */
+    .input-group {
+      margin-bottom: 1.1rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .input-group input.invalid {
+      border-color: var(--error);
+    }
+
+    /* Password field with toggle button */
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 4.2rem;
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+    }
+
+    .toggle-pw:hover {
+      background: rgba(79, 70, 229, 0.08);
+    }
+
+    /* ---------- Row: remember + forgot ---------- */
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .form-row a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .form-row a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Button ---------- */
+    .btn {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Messages ---------- */
+    .message {
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 0.9rem;
+      min-height: 1.2em;
+    }
+
+    .message.error { color: var(--error); }
+    .message.success { color: #16a34a; }
+
+    /* ---------- Sign up link ---------- */
+    .signup {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+    }
+
+    .signup a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .signup a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 420px) {
+      .login-card {
+        padding: 2rem 1.35rem;
+      }
+      .login-card h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="login-card">
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Sign in to continue to your account</p>
+
+    <form id="loginForm" novalidate>
+      <!-- Email -->
+      <div class="input-group">
+        <label for="email">Email address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password">
+            Show
+          </button>
+        </div>
+      </div>
+
+      <!-- Remember / Forgot -->
+      <div class="form-row">
+        <label class="remember">
+          <input type="checkbox" id="remember" name="remember" />
+          Remember me
+        </label>
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Sign In</button>
+
+      <p class="message" id="message" role="status" aria-live="polite"></p>
+    </form>
+
+    <p class="signup">
+      Don't have an account? <a href="#">Create one</a>
+    </p>
+  </main>
+
+  <script>
+    const form      = document.getElementById('loginForm');
+    const email     = document.getElementById('email');
+    const password  = document.getElementById('password');
+    const togglePw  = document.getElementById('togglePw');
+    const submitBtn = document.getElementById('submitBtn');
+    const message   = document.getElementById('message');
+
+    /* ---- Show / hide password ---- */
+    togglePw.addEventListener('click', () => {
+      const isHidden = password.type === 'password';
+      password.type = isHidden ? 'text' : 'password';
+      togglePw.textContent = isHidden ? 'Hide' : 'Show';
+      togglePw.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+    });
+
+    /* ---- Validation helpers ---- */
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function showMessage(text, type = '') {
+      message.textContent = text;
+      message.className = 'message ' + type;
+    }
+
+    function clearInvalid() {
+      email.classList.remove('invalid');
+      password.classList.remove('invalid');
+    }
+
+    /* ---- Submit handler ---- */
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();          // remove this line when wiring a real backend
+      clearInvalid();
+      showMessage('');
+
+      const emailValue = email.value.trim();
+      const passValue  = password.value;
+
+      if (!emailValue) {
+        email.classList.add('invalid');
+        showMessage('Please enter your email address.', 'error');
+        email.focus();
+        return;
+      }
+
+      if (!emailPattern.test(emailValue)) {
+        email.classList.add('invalid');
+        showMessage('Please enter a valid email address.', 'error');
+        email.focus();
+        return;
+      }
+
+      if (!passValue) {
+        password.classList.add('invalid');
+        showMessage('Please enter your password.', 'error');
+        password.focus();
+        return;
+      }
+
+      if (passValue.length < 6) {
+        password.classList.add('invalid');
+        showMessage('Password must be at least 6 characters.', 'error');
+        password.focus();
+        return;
+      }
+
+      /* ---- Simulated request (replace with fetch to your API) ---- */
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in…';
+      showMessage('');
+
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+        showMessage('Signed in successfully! (demo only)', 'success');
+
+        // Example of a real request:
+        // fetch('/api/login', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ email: emailValue, password: passValue })
+        // })
+        //   .then(res => res.json())
+        //   .then(data => { /* handle success */ })
+        //   .catch(() => showMessage('Something went wrong.', 'error'));
+      }, 1000);
+    });
+
+    /* ---- Clear error styling while typing ---- */
+    [email, password].forEach((input) => {
+      input.addEventListener('input', () => {
+        input.classList.remove('invalid');
+        if (message.classList.contains('error')) showMessage('');
+      });
+    });
+  </script>
+
+</body>
+</html>
